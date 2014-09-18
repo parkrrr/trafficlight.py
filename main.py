@@ -2,8 +2,6 @@ import sys
 import RPi.GPIO as GPIO
 import time
 
-__author__ = 'Parker'
-
 # light name, pin value
 LIGHTS = {'red': 4, 'amber': 3, 'green': 2}
 VERBOSE = True
