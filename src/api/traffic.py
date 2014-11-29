@@ -1,21 +1,46 @@
+from flask import Flask, jsonify
 import sys
 import RPi.GPIO as GPIO
 import time
+import operator
+app = Flask(__name__)
+
+__author__ = 'Parker'
+
+lights = {}
+
+@app.route('/light/<name>', methods=['POST'])
+def toggle(name):
+    lights[name].Toggle()
+    return str(lights[name].status)
+
+@app.route('/light/<name>/on', methods=['POST'])
+def on(name):
+    lights[name].On()
+    return str(lights[name].status)
+
+@app.route('/light/<name>/off', methods=['POST'])
+def off(name):
+    lights[name].Off()
+    return str(lights[name].status)
+
+@app.route('/light/<name>', methods=['GET'])
+def status(name):
+    return jsonify(light=name, status=lights[name].status)
 
 # light name, pin value
-LIGHTS = {'red': 4, 'amber': 3, 'green': 2}
-VERBOSE = True  # TODO use better logging
+LIGHTS = { 'red': 2, 'amber': 4, 'green': 3 }
+VERBOSE = True
 
-# simply to resolve any confusion
+
 ON = False
 OFF = True
 
-
 class Light:
-    name = "undefined"  # human-friendly name of the light
-    status = False  # light status
-    locked = False  # lock status
-    pin = 0  # GPIO pin
+    name = "undefined"
+    status = False
+    locked = False
+    pin = 0
 
     def __init__(self, name, pin):
         print 'Setting up %s light (pin %s)' % (name, pin)
@@ -31,37 +56,36 @@ class Light:
         time.sleep(0.25)
 
     def Lock(self):
-        """Locks a light to its current status"""
         print 'Locking %s light' % self.name
         self.locked = True
 
     def Unlock(self):
-        """Unlocks the light, allowing for it to change"""
         print 'Unlocking %s light' % self.name
         self.locked = False
 
     def On(self):
-        """Sends a command to the relay to complete the circuit for the lamp"""
         print 'Turning on %s light' % self.name
         self.status = ON
         self.Output()
 
     def Off(self):
-        """Sends a command to the relay to cut the circuit for the lamp"""
         print 'Turning off %s light' % self.name
         self.status = OFF
         self.Output()
 
     def Toggle(self):
-        """Sends a command to the relay  to be the opposite of
-        whatever it is"""
         print 'Toggling %s light' % self.name
         self.status = not self.status
         self.Output()
 
+    def Flash(self):
+        print 'Flashing %s light' % self.name
+        self.Off()
+        self.On()
+        time.sleep(0.5)
+        self.Off()
+
     def Output(self):
-        """Actually sends the command to the relay
-        This is where the locked flag is checked"""
         if not self.locked:
             if VERBOSE:
                 print '%s light status: %s' % (self.name, self.status)
@@ -70,32 +94,26 @@ class Light:
             if VERBOSE:
                 print '%s light is locked' % (self.name)
 
-
 def main():
     try:
-        print 'Setting GPIO mode...'
-        GPIO.setmode(GPIO.BCM)
+        sortedLights = sorted(LIGHTS.items(), key=operator.itemgetter(1), reverse=False);
 
-        # populate the light dictionary
-        lights = {}
-        for light_name in LIGHTS.keys():
-            lights[light_name] = Light(light_name, LIGHTS[light_name])
-
-        lights['red'].On()
-        lights['red'].Lock()
-
-        while True:
-            for light in lights:
-                time.sleep(1)
-                lights[light].Toggle()
+        for light in sortedLights:
+            lights[light[0]] = Light(light[0], light[1])
 
     except:
         print "Unexpected error:", sys.exc_info()[0]
         raise
 
-    finally:
-        # if you don't clean up you're gonna have a bad time
-        GPIO.cleanup()
-
 if __name__ == "__main__":
-    main()
+    try:
+        GPIO.setmode(GPIO.BCM)
+        main()
+        app.run(host='0.0.0.0')
+    finally:
+        GPIO.cleanup()
+~
+~
+~
+~
+
