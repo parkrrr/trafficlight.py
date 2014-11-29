@@ -18,4 +18,4 @@ function trafficViewModel(lights) {
 }
 
 // Activates knockout.js
-ko.applyBindings(new trafficViewModel(["red", "orange", "green"]));
+ko.applyBindings(new trafficViewModel(["red", "amber", "green"]));

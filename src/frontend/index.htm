@@ -6,17 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Traffic Light Controller</title>
 
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="light.css" rel="stylesheet">
   </head>
   <body>
     <div id="light" data-bind="foreach: lights">
-	    <span class="active" data-bind="attr: { id: name }, click: toggle, css: { active: on }"></span>
-	</div>
+     <span class="active" data-bind="attr: { id: name }, click: toggle, css: { active: on }"></span>
+    </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.2.0/knockout-min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <script src="light.js"></script>
   </body>
 </html>

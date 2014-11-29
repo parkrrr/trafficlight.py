@@ -4,25 +4,25 @@
     box-shadow: 0 0 5px rgba(0,0,0, .8);
     overflow: hidden;
     padding: 0 0 4px;
-    width: 80px;
+    width: 140px;
 }
 
 #light span {
-    border-radius: 50px;
+    border-radius: 50%;
     display: block;
-    height: 60px;
+    height: 120px;
     margin: 4px auto 0;
     opacity: .5;
-    width: 60px;
+    width: 120px;
 }
 
 /*! Light colours */
 #red    { background-color: red; }
-#orange { background-color: orange; }
+#amber { background-color: orange; }
 #green  { background-color: green; }
 
 /*! Active states */
 #light span.active    { opacity: 1; }
 #light #red.active    { box-shadow: 0 0 10px red; }
-#light #orange.active { box-shadow: 0 0 10px orange; }
+#light #amber.active { box-shadow: 0 0 10px orange; }
 #light #green.active  { box-shadow: 0 0 10px green; }
